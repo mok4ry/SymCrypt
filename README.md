@@ -7,9 +7,12 @@ A symmetric encryption library and program.
 Algorithm
 --------
 SymCrypt generates keys of variable bit length using a Mersenne Twist implementation
-for generation of high-quality random numbers.
+for generation of high-quality pseudorandom numbers.
 
-Encryption is a basic XOR cipher using a given or generated key:
+Encryption is a basic XOR cipher using a given or generated key. A key whose
+length is __less__ than the data is repeated until each data character is
+encrypted, and a key whose length is __greater__ than the data is only used
+until each data character is encrypted.
 
 ```
 // For an n-byte key 'key' and input text 'txt', produce ciphertext 'enc'

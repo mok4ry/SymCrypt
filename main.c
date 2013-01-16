@@ -81,6 +81,7 @@ void generate_key_and_crypt(
   crypt_to_file_with_key( slurp(in_file), key, crypt_out );
   write_to_file( key->key_chars, key_out );
   printf( "Saved %d-bit key to: %s\n", ( bits / 8 ) * 8, key_out );
+  printf( "Saved crypted data to: %s\n", crypt_out );
 }
 
 void generate_and_store_key( int bits, char *key_out ) {

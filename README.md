@@ -79,6 +79,7 @@ Future Plans
 Known Bugs
 ----------
 * When the current key character and data character are the same, the result of XORing them is 0. This represents the null terminator ('\0') and fools C into believing it is the end of the string, which truncates everything after that character in the crypted text.
+ * Temporary fix is to detect a 0 result of the XOR operation and set that character equal to something else instead (currently '?'). This way, the entire message is considered but single characters may be incorrect in the decryption, e.g. `This is some t/xt.`.
 
 
 #### Author

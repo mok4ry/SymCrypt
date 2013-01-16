@@ -15,3 +15,8 @@
 *.exe
 *.out
 *.app
+
+# Project-specific files
+*.key
+*.crypt
+symcrypt

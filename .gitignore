@@ -19,4 +19,5 @@
 # Project-specific files
 *.key
 *.crypt
+*.me        # files used in testing encryption
 symcrypt

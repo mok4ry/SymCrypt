@@ -15,6 +15,8 @@
 #include "symcrypt.h"
 #include "mtwist.h"
 
+#define MAX_CHAR (65536)
+
 KEY *generate_key( int bits, int char_length ) {
   if ( ! mt_initialized() ) initialize_with_rand();
   int i;
@@ -31,7 +33,7 @@ KEY *generate_key( int bits, int char_length ) {
   key->key_chars = malloc( sizeof(wchar_t) * (key->characters + 1) );
 
   for ( i = 0; i < key->characters; i++ ) {
-    key->key_chars[i] = extract_number() >> (32 - char_length);
+    key->key_chars[i] = extract_number() >> (32 - char_length) % MAX_CHAR;
   }
   key->key_chars[key->characters] = L'\0';
   return key;

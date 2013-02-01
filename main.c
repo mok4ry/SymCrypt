@@ -6,12 +6,14 @@
 #include "main.h"
 
 #define DEFAULT_KEY_BITS (128)
+#define DEFAULT_CHAR_LENGTH (32)
 #define TIMESTAMP_LENGTH (10)
 #define CRYPT_FILENAME_LENGTH (TIMESTAMP_LENGTH + 6)
 #define KEY_FILENAME_LENGTH (TIMESTAMP_LENGTH + 4)
 
 int main( int argc, char *argv[] ) {
   int c, bits = DEFAULT_KEY_BITS, bits_specified = 0, generate = 0;
+  int char_length = DEFAULT_CHAR_LENGTH;
   char *key_file = NULL, *in_file = NULL, *options = "f:k:b:g";
   char *crypt_out_filename, *key_out_filename;
 
@@ -49,9 +51,9 @@ int main( int argc, char *argv[] ) {
     crypt_to_file( in_file, key_file, crypt_out_filename );
   } else if ( in_file != NULL ) {
     generate_key_and_crypt(
-      in_file, bits, crypt_out_filename, key_out_filename );
+      in_file, bits, crypt_out_filename, key_out_filename, char_length );
   } else {
-    generate_and_store_key( bits, key_out_filename );
+    generate_and_store_key( bits, key_out_filename, char_length );
   }
 
 }
@@ -76,17 +78,19 @@ void crypt_to_file( char *in_file, char *key_file, char *crypt_out ) {
 }
 
 void generate_key_and_crypt(
-    char *in_file, int bits, char *crypt_out, char *key_out ) {
-  KEY *key = generate_key(bits);
+    char *in_file, int bits, char *crypt_out, char *key_out, int char_length ) {
+  KEY *key = generate_key(bits, char_length);
   crypt_to_file_with_key( slurp(in_file), key, crypt_out );
   write_to_file( key->key_chars, key_out );
-  printf( "Saved %d-bit key to: %s\n", ( bits / 8 ) * 8, key_out );
+  printf( "Saved %d-bit key to: %s\n",
+    ( bits / char_length ) * char_length, key_out );
   printf( "Saved crypted data to: %s\n", crypt_out );
 }
 
-void generate_and_store_key( int bits, char *key_out ) {
-  write_to_file( generate_key_string(bits), key_out );
-  printf( "Saved %d-bit key to: %s\n", ( bits / 8 ) * 8, key_out );
+void generate_and_store_key( int bits, char *key_out, int char_length ) {
+  write_to_file( generate_key_string(bits, char_length), key_out );
+  printf( "Saved %d-bit key to: %s\n",
+    ( bits / char_length ) * char_length, key_out );
 }
 
 void validate_args( char *in_file, char *key_file, int bits_specified,
@@ -107,18 +111,19 @@ void validate_args( char *in_file, char *key_file, int bits_specified,
   }
 }
 
-void crypt_to_file_with_key( char *text, KEY *key, char *filename ) {
+void crypt_to_file_with_key( wchar_t *text, KEY *key, char *filename ) {
   write_to_file( crypt_with_key(text, key), filename );
 }
 
-void write_to_file( char *content, char *filename ) {
+void write_to_file( wchar_t *content, char *filename ) {
   FILE *out_file = fopen( filename, "wb" );
-  fprintf( out_file, "%s", content );
+  fprintf( out_file, "%ls", content );
   fclose(out_file);
 }
 
-char *slurp( char *filename ) {
-  char *file_string;
+wchar_t *slurp( char *filename ) {
+  wchar_t *file_string, current;
+
   FILE *in_file = fopen( filename, "rb" );
   if ( in_file == NULL ) {
     printf( "Error opening file: %s\n", filename );
@@ -126,12 +131,16 @@ char *slurp( char *filename ) {
   }
 
   fseek( in_file, 0L, SEEK_END );
-  int s = ftell( in_file );
+  int s = ftell( in_file ), index = 0;
   rewind( in_file );
-  file_string = malloc( s );
+  file_string = malloc( sizeof(wchar_t) * (s + 1) );
 
-  fread( file_string, s, 1, in_file );
+  while( (current = getwc( in_file )) != -1 ) {
+    file_string[index] = current;
+    index++;
+  }
   fclose( in_file );
 
+  file_string[s] = L'\0';
   return file_string;
 }

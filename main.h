@@ -14,28 +14,28 @@ extern void validate_args(
 extern void generate_filenames( char **crypt_out, char **key_out );
 
 // Generate a key of the given length and store it in a file named 'filename'
-extern void generate_and_store_key( int bits, char *key_out );
+extern void generate_and_store_key( int bits, char *key_out, int char_length );
 
 // Writes 'content' to a file named 'filename'
-extern void write_to_file( char *content, char *filename );
+extern void write_to_file( wchar_t *content, char *filename );
 
 // Cipher contents of 'in_file' using key from 'key_file' and store the result
 // in a file name 'crypt_out'
 extern void crypt_to_file( char *in_file, char *key_file, char *crypt_out );
 
 // Cipher 'text' using 'key' and store the result in a file named 'filename'
-extern void crypt_to_file_with_key( char *text, KEY *key, char *filename );
+extern void crypt_to_file_with_key( wchar_t *text, KEY *key, char *filename );
 
 // Generate a key with specified number of bits and use it to cipher contents
 // of 'in_file'. Store the generated key in a file named 'key_out' and the
 // result of the cipher in a file named 'crypt_out'.
 extern void generate_key_and_crypt(
-    char *in_file, int bits, char *crypt_out, char *key_out );
+    char *in_file, int bits, char *crypt_out, char *key_out, int char_length );
 
 // Returns only the string part of a cipher key
-extern char *generate_key_string( int bits );
+extern wchar_t *generate_key_string( int bits, int char_length );
 
 // Read an entire file into one string
-extern char *slurp( char *filename );
+extern wchar_t *slurp( char *filename );
 
 #endif

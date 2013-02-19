@@ -11,7 +11,7 @@ extern void validate_args(
 
 // Create file names for crypt and key output files using rand() seeded with
 // current UNIX time
-extern void generate_filenames( char **crypt_out, char **key_out );
+extern int generate_filenames( char **crypt_out, char **key_out );
 
 // Generate a key of the given length and store it in a file named `filename`
 extern void generate_and_store_key( int bits, char *key_out );

@@ -46,7 +46,7 @@ int main( int argc, char *argv[] ) {
   }
 
   validate_args( in_file, key_file, bits_specified, generate );
-  generate_filenames( &crypt_out_filename, &key_out_filename );
+  int fname_int = generate_filenames( &crypt_out_filename, &key_out_filename );
 
   if ( key_file != NULL ) {
     crypt_to_file( in_file, key_file, crypt_out_filename );
@@ -60,9 +60,11 @@ int main( int argc, char *argv[] ) {
     generate_and_store_key( bits, key_out_filename );
   }
 
+  return fname_int;
+
 }
 
-void generate_filenames( char **crypt_out, char **key_out ) {
+int generate_filenames( char **crypt_out, char **key_out ) {
   *crypt_out = malloc( CRYPT_FILENAME_LENGTH + 1 );
   *key_out = malloc( KEY_FILENAME_LENGTH + 1 );
 
@@ -73,6 +75,8 @@ void generate_filenames( char **crypt_out, char **key_out ) {
 
   strcat( *crypt_out, ".crypt" );
   strcat( *key_out, ".key" );
+
+  return rand_num;
 }
 
 void crypt_to_file( char *in_file, char *key_file, char *crypt_out ) {

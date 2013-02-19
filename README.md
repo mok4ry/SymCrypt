@@ -34,14 +34,17 @@ Options
 * Generate a key of default bit length (128) and use it to cipher
 the contents of `filename`. Output the new key and resulting text to files.
 
-`-g`
-* Generate a key of default bit length (128) and output it to a file.
-
 `-b <bits>`
 * Specify the bit length of a key to be generated.
 
 `-k <filename>`
 * Use the contents of `filename` as the key when ciphering.
+
+`-g`
+* Generate a key of default bit length (128) and output it to a file.
+
+`-a`
+* Prompt for the key on the command-line (no echo)
 
 ### Examples
 ```
@@ -56,6 +59,10 @@ Saved crypted data to: 1560854361.crypt
 $ ./symcrypt -f encrypt.me -b 512
 Saved 512-bit key to: 1561913202.key
 Saved crypted data to: 1561913202.crypt
+
+$ ./symcrypt -f encrypt.me -a
+Key: 
+Saved crypted data to: 2039284423.crypt
 
 $ ./symcrypt -g
 Saved 128-bit key to: 1562249342.key

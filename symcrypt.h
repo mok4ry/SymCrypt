@@ -25,6 +25,9 @@ extern KEY *generate_key_with_seed( int bits, int seed );
 // Get a KEY struct from the contents of a file
 extern KEY *get_key_from_file( char *filename );
 
+// Get a KEY struct from a NULL-terminated raw key string
+extern KEY *get_key_from_raw_string( char *key_string );
+
 // Generate a key of the given number of bits and return the raw key string
 extern char *generate_key_string( int bits );
 

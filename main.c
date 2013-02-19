@@ -11,8 +11,8 @@
 #define KEY_FILENAME_LENGTH (TIMESTAMP_LENGTH + 4)
 
 int main( int argc, char *argv[] ) {
-  int c, bits = DEFAULT_KEY_BITS, bits_specified = 0, generate = 0;
-  char *key_file = NULL, *in_file = NULL, *options = "f:k:b:g";
+  int c, bits = DEFAULT_KEY_BITS, bits_specified = 0, generate = 0, ask = 0;
+  char *key_file = NULL, *in_file = NULL, *options = "f:k:b:ga";
   char *crypt_out_filename, *key_out_filename;
 
   extern char *optarg;
@@ -33,6 +33,9 @@ int main( int argc, char *argv[] ) {
       case 'g':     // generate a new key
         generate = 1;
         break;
+      case 'a':     // prompt for key on command-line
+        ask = 1;
+        break;
       case '?':
         printf( "Error with flag: %c (invalid or argument missing)\n",
           optopt );
@@ -47,6 +50,9 @@ int main( int argc, char *argv[] ) {
 
   if ( key_file != NULL ) {
     crypt_to_file( in_file, key_file, crypt_out_filename );
+  } else if ( ask ) {
+    crypt_to_file_with_key_string(
+      in_file, getpass("Key: "), crypt_out_filename );
   } else if ( in_file != NULL ) {
     generate_key_and_crypt(
       in_file, bits, crypt_out_filename, key_out_filename );
@@ -71,6 +77,13 @@ void generate_filenames( char **crypt_out, char **key_out ) {
 
 void crypt_to_file( char *in_file, char *key_file, char *crypt_out ) {
   KEY *key = get_key_from_file( key_file );
+  crypt_to_file_with_key( slurp(in_file), key, crypt_out );
+  printf( "Saved crypted data to: %s\n", crypt_out );
+}
+
+void crypt_to_file_with_key_string( char *in_file, char *key_string,
+    char *crypt_out ) {
+  KEY *key = get_key_from_raw_string( key_string );
   crypt_to_file_with_key( slurp(in_file), key, crypt_out );
   printf( "Saved crypted data to: %s\n", crypt_out );
 }

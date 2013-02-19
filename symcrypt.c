@@ -62,6 +62,16 @@ KEY *get_key_from_file( char *filename ) {
   return key;
 }
 
+KEY *get_key_from_raw_string( char *key_string ) {
+  KEY *new_key = malloc( sizeof(KEY) );
+  new_key->bytes = strlen(key_string);
+  new_key->key_chars = malloc( new_key->bytes + 1 );
+  strcpy( new_key->key_chars, key_string );
+  new_key->key_chars[ new_key->bytes ] = '\0';
+
+  return new_key;
+}
+
 char *generate_key_string( int bits ) {
   KEY *key = generate_key( bits );
   char *key_string = key->key_chars;
